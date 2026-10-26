@@ -1,71 +1,33 @@
-# gitquest README
+# GitQuestPlugin
+# Название проекта: GitQuest — Путь Коммитера
 
-This is the README for your extension "gitquest". After writing up a brief description, we recommend including the following sections.
+## 👥 Авторы (Команда)
+- Проджект-менеджер: [Шестакова Ника Константиновна], группа [M3125][cite: 7]
+- Разработчик 1 (Core): [Юсупова Ева Эдуардовна], группа [M3125][cite: 7]
+- Разработчик 2 (Status Bar): [Ядохина Олеся Денисовна], группа [M3125][cite: 7]
+- Разработчик 3 (UI / Achievements): [Хохич Виктория Александровна], группа [M3125][cite: 7]
+- Разработчик 4 (Git Quest Logic): [Шайхутдинова Диана Рустемовна], группа [M3125][cite: 7]
 
-## Features
+## 📌 Описание проекта
+GitQuest — это интерактивный плагин для IDE, обучающий студентов работе с системой контроля версий Git в игровой форме прямо в процессе написания кода.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## 🚀 Реализованный функционал (Список фич)
+- Базовый блок (4 балла): Создан проект, добавлена кнопка в Toolbar с выводом приветствия, пункт в контекстном меню файла, проект опубликован на GitHub[cite: 5].
+- Полезные фичи (Желтый блок): Таймер кодера в статус-баре с функцией сброса по клику, система уведомлений[cite: 5].
+- Продвинутые фичи (Красный блок - 15 баллов): Викторина по Git с генерацией задач и проверкой состояния репозитория, система достижений (бейджей)[cite: 6].
 
-For example if there is an image subfolder under your extension project workspace:
+## 🛠 Инструкция по запуску
+1. Клонируйте репозиторий на свой компьютер.
+2. Откройте проект в IntelliJ IDEA Community[cite: 3].
+3. Дождитесь окончания синхронизации Gradle.
+4. В правом верхнем углу выберите конфигурацию запуска Run -> Run 'Plugin' и нажмите зеленую кнопку воспроизведения[cite: 7].
+5. В открывшемся окне-песочнице IDE протестируйте работу плагина.
 
-\!\[feature X\]\(images/feature-x.png\)
+## 📸 Демонстрация работы (Скриншоты)
+*(Вставьте сюда 2-3 скриншота работающего плагина)*[cite: 7]
+![Демо 1](docs/screenshots/demo1.png)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+## 📊 Динамика командной работы (Kanban-доска)
+*(Вставьте скриншоты доски в разные периоды времени)*[cite: 7]
+![Доска Старт](docs/screenshots/board_start.png)
+![Доска Финал](docs/screenshots/board_final.png)
