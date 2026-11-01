@@ -22,6 +22,14 @@
       {
         "command": "gitquest.checkFile",
         "title": "GitQuest: Проверить этот файл"
+      },
+      {
+        "command": "gitquest.resetTimer",
+        "title": "GitQuest: Сбросить таймер"
+      },
+      {
+        "command": "gitquest.togglePomodoro",
+        "title": "GitQUest: ВключитьВыключить Pomodoro (25/5)"
       }
     ],
     "menus": {
