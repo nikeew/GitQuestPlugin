@@ -32,6 +32,23 @@
         "title": "GitQUest: ВключитьВыключить Pomodoro (25/5)"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "gitquest-sidebar",
+          "title": "GitQuest", 
+          "icon": "$(game)"
+        }
+      ]
+    },
+    "views": {
+      "gitquest-sidebar": [
+        {
+          "id": "gitquestStats",
+          "name": "Игровой профиль"
+        }
+      ]
+    },
     "menus": {
       "editor/context": [
         {
