@@ -6,6 +6,9 @@
   "engines": {
     "vscode": "^1.140.0"
   },
+  "extensionDependencies": [
+    "vscode.git"
+  ],
   "categories": [
     "Other"
   ],
@@ -30,6 +33,10 @@
       {
         "command": "gitquest.togglePomodoro",
         "title": "GitQUest: ВключитьВыключить Pomodoro (25/5)"
+      },
+      {
+        "command": "gitquest.checkRelease",
+        "title": "GitQuest: Проверить готовность к релизу"
       }
     ],
     "viewsContainers": {

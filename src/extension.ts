@@ -5,7 +5,7 @@ let pomodoroSeconds = 25 * 60;
 let isPomodoroActive = false;
 let interval: NodeJS.Timeout | undefined;
 
-// Состояние ачивок (общие переменные для провайдера и логики)
+// Состояние ачивок
 let achCleanCode = false;
 let achProCommit = false;
 let achRefactorMaster = false;
@@ -15,7 +15,7 @@ let achBugHunter = false;
 let achReleaseReady = false;
 let achTopContributor = false;
 
-// Провайдер для боковой панели с полной статистикой и списком ачивок
+// Провайдер для боковой панели
 class GitQuestTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | void> = new vscode.EventEmitter<vscode.TreeItem | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | void> = this._onDidChangeTreeData.event;
@@ -35,20 +35,38 @@ class GitQuestTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeIte
 
         const items: vscode.TreeItem[] = [];
 
-        // Основная статистика сессии
-        items.push(new vscode.TreeItem(`Уровень: 1 (Новичок)`, vscode.TreeItemCollapsibleState.None));
-        items.push(new vscode.TreeItem(`Время в коде: ${formattedTime}`, vscode.TreeItemCollapsibleState.None));
-        items.push(new vscode.TreeItem(`Pomodoro: ${isPomodoroActive ? 'Включен' : 'Выключен'}`, vscode.TreeItemCollapsibleState.None));
+        const levelItem = new vscode.TreeItem(`Уровень: 1 (Новичок)`, vscode.TreeItemCollapsibleState.None);
+        levelItem.iconPath = new vscode.ThemeIcon('account', new vscode.ThemeColor('charts.purple'));
+        items.push(levelItem);
 
-        // Список ачивок
-        items.push(new vscode.TreeItem(achCleanCode ? "[Линтер] Чистый код" : "[Линтер] Сохранить файл без багов", vscode.TreeItemCollapsibleState.None));
-        items.push(new vscode.TreeItem(achBugHunter ? "[Код] Охотник за багами" : "[Код] Очистить файл от ворнингов", vscode.TreeItemCollapsibleState.None));
-        items.push(new vscode.TreeItem(achProCommit ? "[Git] Мастер Commits" : "[Git] Пройти валидацию коммита", vscode.TreeItemCollapsibleState.None));
-        items.push(new vscode.TreeItem(achBranchMaster ? "[GitFlow] Мастер ветвления" : "[GitFlow] Создать feature/ ветку", vscode.TreeItemCollapsibleState.None));
-        items.push(new vscode.TreeItem(achRefactorMaster ? "[Архитектура] Рефактор-бог" : "[Архитектура] Написать от 20 строк", vscode.TreeItemCollapsibleState.None));
-        items.push(new vscode.TreeItem(achReleaseReady ? "[Релиз] Релизный день" : "[Релиз] Пройти пре-релизный контроль", vscode.TreeItemCollapsibleState.None));
-        items.push(new vscode.TreeItem(achNightHacker ? "[Пасхалка] Ночной хакер" : "[Пасхалка] Кодить в ночное время", vscode.TreeItemCollapsibleState.None));
-        items.push(new vscode.TreeItem(achTopContributor ? "[ЛЕГЕНДА] Топ-контрибьютор" : "[ЛЕГЕНДА] Собрать основные навыки", vscode.TreeItemCollapsibleState.None));
+        const timeItem = new vscode.TreeItem(`Время в коде: ${formattedTime}`, vscode.TreeItemCollapsibleState.None);
+        timeItem.iconPath = new vscode.ThemeIcon('clock', new vscode.ThemeColor('charts.blue'));
+        items.push(timeItem);
+
+        const pomoItem = new vscode.TreeItem(`Pomodoro: ${isPomodoroActive ? 'Включен' : 'Выключен'}`, vscode.TreeItemCollapsibleState.None);
+        pomoItem.iconPath = new vscode.ThemeIcon('play-circle', new vscode.ThemeColor(isPomodoroActive ? 'charts.green' : 'charts.red'));
+        items.push(pomoItem);
+
+        const createAchievementItem = (title: string, isUnlocked: boolean) => {
+            const item = new vscode.TreeItem(title, vscode.TreeItemCollapsibleState.None);
+            if (isUnlocked) {
+                item.iconPath = new vscode.ThemeIcon('pass', new vscode.ThemeColor('charts.green'));
+                item.description = 'Разблокировано';
+            } else {
+                item.iconPath = new vscode.ThemeIcon('circle-outline', new vscode.ThemeColor('disabledForeground'));
+                item.description = 'Закрыто';
+            }
+            return item;
+        };
+
+        items.push(createAchievementItem(achCleanCode ? "Чистый код" : "Сохранить файл без багов", achCleanCode));
+        items.push(createAchievementItem(achBugHunter ? "Охотник за багами" : "Очистить файл от ворнингов", achBugHunter));
+        items.push(createAchievementItem(achProCommit ? "Мастер Commits" : "Сделать правильный коммит", achProCommit));
+        items.push(createAchievementItem(achBranchMaster ? "Мастер ветвления" : "Создать feature/ ветку", achBranchMaster));
+        items.push(createAchievementItem(achRefactorMaster ? "Рефактор-бог" : "Написать от 20 строк", achRefactorMaster));
+        items.push(createAchievementItem(achReleaseReady ? "Релизный день" : "Пройти пре-релизный контроль", achReleaseReady));
+        items.push(createAchievementItem(achNightHacker ? "Ночной хакер" : "Кодить в ночное время", achNightHacker));
+        items.push(createAchievementItem(achTopContributor ? "[ЛЕГЕНДА] Топ-контрибьютор" : "[ЛЕГЕНДА] Собрать основные навыки", achTopContributor));
 
         return Promise.resolve(items);
     }
@@ -57,18 +75,15 @@ class GitQuestTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeIte
 export function activate(context: vscode.ExtensionContext) {
     console.log('GitQuest успешно активирован!');
 
-    // Проверка пасхалки (ночной хакер: 00:00 - 06:00)
     const currentHour = new Date().getHours();
     if (currentHour >= 0 && currentHour < 6) {
         achNightHacker = true;
     }
 
-    // Создаем и регистрируем провайдер боковой панели
     const treeDataProvider = new GitQuestTreeDataProvider();
-    vscode.window.registerTreeDataProvider('gitquestAchievementsView', treeDataProvider);
-    vscode.window.registerTreeDataProvider('gitquestStats', treeDataProvider); // для совместимости
+    vscode.window.registerTreeDataProvider('gitquestStats', treeDataProvider);
 
-    // --- ФИЧА 1: УМНЫЙ ЛИНТЕР И СОХРАНЕНИЕ ---
+    // --- УМНЫЙ ЛИНТЕР И СОХРАНЕНИЕ ФАЙЛОВ ---
     let diagnosticCollection = vscode.languages.createDiagnosticCollection('gitquest-scanner');
     context.subscriptions.push(diagnosticCollection);
 
@@ -86,6 +101,10 @@ export function activate(context: vscode.ExtensionContext) {
                 ]);
             }
         });
+
+        if (!hasErrors) {
+            diagnosticCollection.clear();
+        }
 
         if (!hasErrors && !achCleanCode) {
             achCleanCode = true;
@@ -106,11 +125,53 @@ export function activate(context: vscode.ExtensionContext) {
         treeDataProvider.refresh();
     });
 
-    // --- ФИЧА 2: ВАЛИДАТОР КОММИТОВ ---
+    // --- АВТОМАТИЧЕСКОЕ ОТСЛЕЖИВАНИЕ GIT ---
+    const extension = vscode.extensions.getExtension('vscode.git');
+    if (extension) {
+        const gitApi = extension.exports.getAPI(1);
+
+        const setupRepoListeners = (repo: any) => {
+            repo.state.onDidChange(() => {
+                const head = repo.state.HEAD;
+
+                // 1. Автопроверка ветки (Git Flow)
+                if (head && head.name) {
+                    if ((head.name.startsWith('feature/') || head.name.startsWith('bugfix/')) && !achBranchMaster) {
+                        achBranchMaster = true;
+                        vscode.window.showInformationMessage(`АЧИВКА: "Мастер ветвления" (Ветка ${head.name})!`);
+                        checkLegendStatus();
+                        treeDataProvider.refresh();
+                    }
+                }
+
+                // 2. Автопроверка коммитов
+                if (repo.state.commits && repo.state.commits.length > 0) {
+                    const lastCommit = repo.state.commits[0];
+                    if (lastCommit && lastCommit.message) {
+                        const commitMsg = lastCommit.message.trim();
+                        const validPrefixes = ['feat:', 'fix:', 'docs:', 'style:', 'refactor:', 'test:', 'chore:'];
+                        const isValid = validPrefixes.some(p => commitMsg.startsWith(p)) && commitMsg.length > 10;
+
+                        if (isValid && !achProCommit) {
+                            achProCommit = true;
+                            vscode.window.showInformationMessage(`АЧИВКА: "Мастер Conventional Commits"!`);
+                            checkLegendStatus();
+                            treeDataProvider.refresh();
+                        }
+                    }
+                }
+            });
+        };
+
+        gitApi.repositories.forEach((repo: any) => setupRepoListeners(repo));
+        gitApi.onDidOpenRepository((repo: any) => setupRepoListeners(repo));
+    }
+
+    // --- ИНТЕРАКТИВНАЯ ПРОВЕРКА КОММИТА (КНОПКА) ---
     let commitCheckerCommand = vscode.commands.registerCommand('gitquest.checkCommit', async () => {
         const commitMessage = await vscode.window.showInputBox({
             placeHolder: 'Например: feat: добавлен модуль авторизации',
-            prompt: 'Введите текст вашего Git-коммита по стандарту Conventional Commits'
+            prompt: 'Введите текст вашего коммита по стандарту Conventional Commits'
         });
 
         if (!commitMessage) return;
@@ -131,28 +192,31 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    // --- ФИЧА 3: СИМУЛЯТОР СОЗДАНИЯ ВЕТКИ ---
-    let branchCommand = vscode.commands.registerCommand('gitquest.createBranch', async () => {
-        const branchName = await vscode.window.showInputBox({
-            placeHolder: 'feature/login-page',
-            prompt: 'Введите имя новой ветки по стандарту Git Flow (feature/... или bugfix/...)'
-        });
+    let testAchievementsCommand = vscode.commands.registerCommand('gitquest.testAchievements', () => {
+        achCleanCode = true;
+        achProCommit = true;
+        achRefactorMaster = true;
+        achBranchMaster = true;
+        achBugHunter = true;
+        achReleaseReady = true;
+        checkLegendStatus();
+        treeDataProvider.refresh();
+        vscode.window.showInformationMessage('ТЕСТ: Все ачивки принудительно разблокированы!');
+    })
 
-        if (!branchName) return;
-
-        if (branchName.startsWith('feature/') || branchName.startsWith('bugfix/')) {
-            vscode.window.showInformationMessage(`Успешно создана и переключена ветка: ${branchName}`);
-            if (!achBranchMaster) {
-                achBranchMaster = true;
-                vscode.window.showInformationMessage('АЧИВКА: "Мастер ветвления" (Правильная работа с Git Flow)!');
-                checkLegendStatus();
-                treeDataProvider.refresh();
-            }
-        } else {
-            vscode.window.showErrorMessage(`Неверное имя ветки! Используйте префиксы feature/ или bugfix/.`);
-        }
+    let resetAchievementsCommand = vscode.commands.registerCommand('gitquest.resetAchievements', () => {
+        achCleanCode = false;
+        achProCommit = false;
+        achRefactorMaster = false;
+        achNightHacker = false;
+        achBranchMaster = false;
+        achBugHunter = false;
+        achReleaseReady = false;
+        achTopContributor = false;
+        treeDataProvider.refresh();
+        vscode.window.showInformationMessage('Все ачивки успешно сброшены!');
     });
-    // --- ФИЧА 4: ПРОВЕРКА ГОТОВНОСТИ К РЕЛИЗУ ---
+
     let releaseCommand = vscode.commands.registerCommand('gitquest.checkRelease', () => {
         if (achCleanCode && achProCommit) {
             achReleaseReady = true;
@@ -164,7 +228,6 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    // --- БАЗОВЫЕ КОМАНДЫ И СТАТУС-БАР ---
     let helloCommand = vscode.commands.registerCommand('gitquest.helloWorld', () => {
         vscode.window.showInformationMessage('Hello, World! Ева');
     });
@@ -175,14 +238,16 @@ export function activate(context: vscode.ExtensionContext) {
     helloStatusBarItem.tooltip = 'GitQuest: Поприветствовать';
     helloStatusBarItem.show();
 
-    let checkFileCommand = vscode.commands.registerCommand('gitquest.checkFile', (uri: vscode.Uri) => {
-        vscode.window.showInformationMessage(`Проверяем файл: ${uri ? uri.fsPath : 'неизвестно'}`);
-    });
-
     let timerStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 90);
     timerStatusBarItem.command = 'gitquest.resetTimer';
     timerStatusBarItem.tooltip = "Время кодинга за сессию. Кликните, чтобы сбросить.";
     timerStatusBarItem.show();
+
+    let gitHelperStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 95);
+    gitHelperStatusBar.command = 'gitquest.checkCommit';
+    gitHelperStatusBar.text = `$(git-merge) Проверить коммит`;
+    gitHelperStatusBar.tooltip = 'Кликните, чтобы проверить текст коммита';
+    gitHelperStatusBar.show();
 
     function formatTime(totalSeconds: number): string {
         const mins = Math.floor(totalSeconds / 60);
@@ -190,12 +255,10 @@ export function activate(context: vscode.ExtensionContext) {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
-    // ТАЙМЕР И ЕЖЕСЕКУНДНОЕ ОБНОВЛЕНИЕ БОКОВОЙ ПАНЕЛИ
     interval = setInterval(() => {
         secondsCoded++;
         timerStatusBarItem.text = `$(watch) Время в коде: ${formatTime(secondsCoded)}`;
         
-        // Обновляем боковую панель каждую секунду
         treeDataProvider.refresh();
         
         if (isPomodoroActive) {
@@ -220,11 +283,6 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(`Таймер отдыха Pomodoro ${status}.`);
     });
 
-    let gitHelperStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 95);
-    gitHelperStatusBar.command = 'gitquest.checkCommit';
-    gitHelperStatusBar.text = `$(git-merge) Проверить коммит`;
-    gitHelperStatusBar.show();
-
     function checkLegendStatus() {
         if (!achTopContributor && achCleanCode && achProCommit && achRefactorMaster && achBranchMaster && achBugHunter) {
             achTopContributor = true;
@@ -235,13 +293,13 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         helloCommand, 
         helloStatusBarItem,
-        checkFileCommand,
         timerStatusBarItem,
         resetTimerCommand,
         togglePomodoroCommand,
-        commitCheckerCommand,
-        branchCommand,
         releaseCommand,
+        commitCheckerCommand,
+        testAchievementsCommand, 
+        resetAchievementsCommand,
         gitHelperStatusBar,
         {
             dispose: () => {
