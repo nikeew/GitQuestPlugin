@@ -10,7 +10,8 @@
     "vscode.git"
   ],
   "categories": [
-    "Other"
+    "Other",
+    "Education"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -18,6 +19,10 @@
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "gitquest.openQuestsHub",
+        "title": "GitQuest: ⚔️ Открыть центр квестов и профиль"
+      },
       {
         "command": "gitquest.helloWorld",
         "title": "GitQuest: Say Hello"
@@ -32,18 +37,30 @@
       },
       {
         "command": "gitquest.togglePomodoro",
-        "title": "GitQUest: ВключитьВыключить Pomodoro (25/5)"
+        "title": "GitQuest: Включить/Выключить Pomodoro (25/5)"
       },
       {
         "command": "gitquest.checkRelease",
         "title": "GitQuest: Проверить готовность к релизу"
+      },
+      {
+        "command": "gitquest.checkCommit",
+        "title": "GitQuest: Проверить коммит"
+      },
+      {
+        "command": "gitquest.testAchievements",
+        "title": "GitQuest: [ТЕСТ] Разблокировать все ачивки"
+      },
+      {
+        "command": "gitquest.resetAchievements",
+        "title": "GitQuest: [ТЕСТ] Сбросить ачивки"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
           "id": "gitquest-sidebar",
-          "title": "GitQuest", 
+          "title": "GitQuest",
           "icon": "$(game)"
         }
       ]
@@ -52,7 +69,7 @@
       "gitquest-sidebar": [
         {
           "id": "gitquestStats",
-          "name": "Игровой профиль"
+          "name": "Игровой профиль и ачивки"
         }
       ]
     },
